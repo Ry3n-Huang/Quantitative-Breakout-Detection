@@ -33,39 +33,43 @@ def load_data(filepath, encoding='utf-8'):
     return df
 
 def preprocess_data(df):
-    # 删除序号列
-    if '序号' in df.columns:
-        df.drop(['序号'], axis=1, inplace=True)
-    # 确保日期列是日期格式
+    df.drop(['序号'], axis=1, errors='ignore', inplace=True)
     df['日期'] = pd.to_datetime(df['日期'], format='%Y-%m-%d', errors='coerce')
     df.set_index('日期', inplace=True)
+    df = df[df.index.year >= 1991]
 
-    # 处理所有列，尝试转换为浮点数，移除逗号
     for col in df.columns:
         if df[col].dtype == object:
             df[col] = pd.to_numeric(df[col].str.replace(',', ''), errors='coerce')
+    
+    # 去除含缺失值的那一行
+    df.dropna(subset=df.columns.difference(['上证综合指数']), inplace=True, how='any')
 
-    # 严格清除含有任何NaN的行
-    df.dropna(inplace=True, how='any')  # 确保每一行都没有NaN值
-
-    # 聚合上综指到月度涨跌（1，0）
     if '上证综合指数' in df.columns:
-        monthly_index = df['上证综合指数'].resample('M').last()
-        monthly_diff = monthly_index.diff().fillna(0)
-        monthly_up_down = monthly_diff.apply(lambda x: 1 if x > 0 else 0)
-        df = df.resample('M').last()
-        df['指数月度涨跌'] = monthly_up_down.values
+        # 使用每个月的第一天的数据
+        monthly_first = df['上证综合指数'].resample('MS').first()
+        monthly_next_first = monthly_first.shift(-1)  # 下一个月的第一天
 
-    # 删除没用的列
-    X = df.drop(['指数月度涨跌', '上证综合指数'], axis=1) if '上证综合指数' in df.columns else df.drop(['指数月度涨跌'], axis=1)
+        # 计算月度涨跌
+        monthly_diff = monthly_next_first - monthly_first
+        monthly_up_down = monthly_diff.apply(lambda x: 1 if x > 0 else 0)
+        df['指数月度涨跌'] = monthly_up_down.reindex(df.index, method='ffill')
+
+    X = df.drop(['指数月度涨跌', '上证综合指数'], axis=1, errors='ignore')
     y = df['指数月度涨跌']
 
+    if y.isna().any():
+        print("NaN detected in y after processing:", y[y.isna()])
+        raise ValueError("y contains NaN values after preprocessing.")
     return X, y
+
+
+
 
 def prepare_data(X, y):
     if X.empty or y.empty:
         raise ValueError("Input data X or y is empty.")
-    feature_names = X.columns.tolist()  # 保存原始特征名
+    feature_names = X.columns.tolist()
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     scaler = StandardScaler()
     X_train_scaled = pd.DataFrame(scaler.fit_transform(X_train), columns=feature_names)
@@ -75,7 +79,7 @@ def prepare_data(X, y):
     return X_resampled, y_resampled, X_test_scaled, y_test, feature_names
 
 def train_model(X_train, y_train, X_test, y_test):
-    xgb_model = xgb.XGBClassifier(eval_metric='logloss', use_label_encoder=False)
+    xgb_model = xgb.XGBClassifier(eval_metric='logloss', use_label_encoder=False, n_estimators=150, max_depth=5)
     xgb_model.fit(X_train, y_train)
     y_pred = xgb_model.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
@@ -99,6 +103,10 @@ def main():
     filepath = '/Users/xuanming/Desktop/国泰君安/XGBoost预测规模因子收益方向/月宏观C.csv'
     df = load_data(filepath)
     X, y = preprocess_data(df)
+    if y.isna().any():
+        print("NaN detected in y before resampling:")
+        print(y[y.isna()])
+        return
     if X is None or y is None or X.size == 0 or y.size == 0:
         print("No data available after preprocessing.")
         return
@@ -109,10 +117,14 @@ def main():
         return
     
     xgb_model, accuracy = train_model(X_train, y_train, X_test, y_test)
+    xgb_model, accuracy01 = train_model(X_train, y_train, X_train, y_train)
     print(f'测试集准确率: {accuracy:.2f}')
+    print(f'训练集准确率: {accuracy01:.2f}')
+    print(xgb_model.get_booster().attributes())
+    print(xgb_model.get_params()['n_estimators'])
     analyze_model(xgb_model, X_test, feature_names)
+    xgb.plot_tree(xgb_model, num_trees=0)
+    plt.show()
 
 if __name__ == "__main__":
     main()
-
-
