@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 import pandas as pd
 
-db_url = 'mysql+pymysql://hwh:gtja20@124.220.177.115:3306/wind'
+db_url = 'database_info'
 engine = create_engine(db_url)
 
 # 中证全指成分股

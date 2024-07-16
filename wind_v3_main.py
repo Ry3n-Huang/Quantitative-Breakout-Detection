@@ -5,10 +5,10 @@ from datetime import datetime, timedelta
 import time
 
 def create_connection():
-    return pymysql.connect(host='124.220.177.115',
-                           user='hwh',
-                           password='gtja20',
-                           db='wind',
+    return pymysql.connect(host='0.0.0.0',
+                           user='Username',
+                           password='Password',
+                           db='dbname',
                            port=3306,
                            cursorclass=pymysql.cursors.DictCursor)
 
@@ -249,7 +249,7 @@ def get_feasible_stocks(date):
 
 def get_cumulative_return(trade_date, t, stock_code):
 
-    db_url = 'mysql+pymysql://hwh:gtja20@124.220.177.115:3306/wind'
+    db_url = 'database_info'
     engine = create_engine(db_url)
 
     # 涨跌幅需手动计算（依据复权收盘价）
@@ -279,7 +279,7 @@ def calculate_returns_for_stocks(trade_date, t, stock_codes):
 
 
 def get_stock_rank(date, stock_list):
-    db_url = 'mysql+pymysql://hwh:gtja20@124.220.177.115:3306/wind'
+    db_url = 'database_info'
     engine = create_engine(db_url)
     
     # 获取中证全指成分股
@@ -322,7 +322,7 @@ def get_stock_rank(date, stock_list):
 
 def get_index_cumulative_return(trade_date, t):
     
-    db_url = 'mysql+pymysql://hwh:gtja20@124.220.177.115:3306/wind'
+    db_url = 'database_info'
     engine = create_engine(db_url)
     
     
@@ -349,7 +349,7 @@ def get_industry_name(row):
     stock_code = row['Stock Code']
     date = row['Trade Date']
     
-    db_url = 'mysql+pymysql://hwh:gtja20@124.220.177.115:3306/wind'
+    db_url = 'database_info'
     engine = create_engine(db_url)
     
     # 查询股票对应的行业代码，确保date在ENTRY_DT和REMOVE_DT之间或者REMOVE_DT为NULL
@@ -392,7 +392,7 @@ def get_industry_name(row):
 
 
 def filter_csi_all_share_stocks(stock_list):
-    db_url = 'mysql+pymysql://hwh:gtja20@124.220.177.115:3306/wind'
+    db_url = 'database_info'
     engine = create_engine(db_url)
     # 打印初始的stock_list
     print(f"初始的stock_list: {stock_list}")

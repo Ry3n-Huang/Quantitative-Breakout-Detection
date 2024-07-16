@@ -3,7 +3,7 @@ import pymysql
 from sqlalchemy import create_engine
 
 def get_cumulative_return(trade_date, t, stock_code):
-    db_url = 'mysql+pymysql://hwh:gtja20@124.220.177.115:3306/wind'
+    db_url = 'database_info'
     engine = create_engine(db_url)
     query = f"""
     SELECT TRADE_DT, S_DQ_ADJCLOSE, S_DQ_ADJPRECLOSE
@@ -33,7 +33,7 @@ def calculate_returns_for_stocks(trade_date, t, stock_codes):
 
 def get_index_cumulative_return(trade_date, t):
     
-    db_url = 'mysql+pymysql://hwh:gtja20@124.220.177.115:3306/wind'
+    db_url = 'database_info'
     engine = create_engine(db_url)
     
     
