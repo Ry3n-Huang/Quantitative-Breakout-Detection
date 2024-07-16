@@ -145,7 +145,6 @@ def analyze_stock_data(csv_file_path):
             'Plateau Start Date': start_date
         })
     
-    # Convert the results list into a DataFrame
     results_df = pd.DataFrame(results)
     
     results_df.to_csv('2023_plateau_length.csv', index=False)

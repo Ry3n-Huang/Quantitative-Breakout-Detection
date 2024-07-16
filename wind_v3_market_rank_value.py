@@ -1,11 +1,10 @@
 from sqlalchemy import create_engine
 import pandas as pd
 
-# 连接数据库
 db_url = 'mysql+pymysql://hwh:gtja20@124.220.177.115:3306/wind'
 engine = create_engine(db_url)
 
-# 获取中证全指成分股
+# 中证全指成分股
 query_components = """
     SELECT S_CON_WINDCODE
     FROM AINDEXMEMBERS
