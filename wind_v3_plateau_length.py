@@ -5,10 +5,10 @@ from datetime import datetime, timedelta
 import time
 
 def create_connection():
-    return pymysql.connect(host='124.220.177.115',
-                           user='hwh',
-                           password='gtja20',
-                           db='wind',
+    return pymysql.connect(host='0.0.0.0',
+                           user='Username',
+                           password='Password',
+                           db='dbnamew',
                            port=3306,
                            cursorclass=pymysql.cursors.DictCursor)
 

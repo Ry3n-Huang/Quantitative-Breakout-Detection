@@ -4,10 +4,10 @@ import pandas as pd
 from datetime import datetime, timedelta
 
 def create_connection():
-    return pymysql.connect(host='124.220.177.115',
-                           user='hwh',
-                           password='gtja20',
-                           db='factordb',
+    return pymysql.connect(host='0.0.0.0',
+                           user='Username',
+                           password='Password',
+                           db='dbname',
                            port=3306,
                            cursorclass=pymysql.cursors.DictCursor)
 
