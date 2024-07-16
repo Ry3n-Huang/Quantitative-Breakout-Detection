@@ -10,7 +10,6 @@ def set_chinese_font():
 set_chinese_font()
 
 
-# 加载数据
 data = pd.read_csv('/Users/xuanming/Desktop/国泰君安/西部研报_横盘突破/t=n/2018/2018_final.csv')
 
 # 筛选出t=5的数据
@@ -27,7 +26,6 @@ data_t5_filtered['Length Interval'] = pd.cut(data_t5_filtered['Horizontal Platea
 # 计算每个区间的平均累计回报率
 pivot_data = data_t5_filtered.pivot_table(index='Length Interval', values='Cumulative Return', aggfunc=np.mean)
 
-# 绘制热点图
 plt.figure(figsize=(10, 6))
 sns.heatmap(pivot_data, annot=True, cmap='coolwarm', center=0)
 # sns.heatmap(pivot_data, annot=True, cmap='coolwarm', fmt=".2f")

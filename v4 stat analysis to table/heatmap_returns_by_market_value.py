@@ -8,7 +8,6 @@ def set_chinese_font():
 
 set_chinese_font()
 
-# Load the data
 file_path = '/Users/xuanming/Desktop/国泰君安/西部研报_横盘突破/t=n/2018/total_combined.csv'
 data = pd.read_csv(file_path)
 
@@ -40,7 +39,6 @@ pivot_table_filtered = filtered_data.pivot_table(
 # Convert cumulative returns to percentage
 pivot_table_filtered = pivot_table_filtered * 100
 
-# Plotting the heatmap
 plt.figure(figsize=(12, 8))
 sns.heatmap(pivot_table_filtered, annot=True, cmap='YlGnBu', cbar=True, fmt='.2f')
 plt.title('按市值区间和时间段划分的平均累积收益')
