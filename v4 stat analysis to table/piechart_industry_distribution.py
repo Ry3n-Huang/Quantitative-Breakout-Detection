@@ -7,7 +7,6 @@ def set_chinese_font():
 
 set_chinese_font()
 
-# Load the dataset
 data = pd.read_csv('/Users/xuanming/Desktop/国泰君安/西部研报_横盘突破/t=n/2018/t=5_totalyear_data.csv')
 
 # Convert 'Breakout Date' to datetime format for extracting the year
@@ -31,10 +30,8 @@ for year in range(2018, 2024):
     others_row = pd.DataFrame({'Year': [year], 'Industry Name': ['其他'], 'Counts': [others_count]})
     final_data.append(pd.concat([top_year_data, others_row]))
 
-# Combine all years
 final_data = pd.concat(final_data)
 
-# Plotting
 fig, axes = plt.subplots(2, 3, figsize=(15, 10))
 colors = ['#C4E4FF', '#D895DA', '#7469B6', '#AD88C6', '#E1AFD1', '#FFE6E6', '#B0E0E6', '#FFDAB9']  # Colors for 7 industries and "Others"
 year = 2018

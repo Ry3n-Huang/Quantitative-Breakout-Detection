@@ -23,17 +23,14 @@ mean_values = filtered_data.groupby(['Year', 't']).agg({
 mean_values['Cumulative Return'] = mean_values['Cumulative Return'] * 100
 mean_values['Excess Return'] = mean_values['Excess Return'] * 100
 
-# 为热力图创建透视表
 cumulative_return_pivot = mean_values.pivot(index='Year', columns='t', values='Cumulative Return')
 excess_return_pivot = mean_values.pivot(index='Year', columns='t', values='Excess Return')
 
-# 绘制累计回报的热力图
 plt.figure(figsize=(12, 6))
 sns.heatmap(cumulative_return_pivot, annot=True, fmt=".3f", cmap="YlGnBu")
 plt.title('平均累计收益')
 plt.show()
 
-# 绘制超额回报的热力图
 plt.figure(figsize=(12, 6))
 sns.heatmap(excess_return_pivot, annot=True, fmt=".3f", cmap="YlGnBu")
 plt.title('平均超额收益')

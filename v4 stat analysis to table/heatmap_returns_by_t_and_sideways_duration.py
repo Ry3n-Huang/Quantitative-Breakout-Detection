@@ -8,7 +8,6 @@ def set_chinese_font():
 
 set_chinese_font()
 
-# 加载数据
 data_t5 = pd.read_csv('/Users/xuanming/Desktop/国泰君安/西部研报_横盘突破/t=n/2018/t=5_totalyear_data.csv')
 data_combined = pd.read_csv('/Users/xuanming/Desktop/国泰君安/西部研报_横盘突破/t=n/2018/total_combined.csv')
 
@@ -27,18 +26,15 @@ def process_data(t_value):
     data_t['Interval'] = pd.cut(data_t['Horizontal Plateau Length'], bins=bins, labels=labels, right=False)
     return data_t.pivot_table(index='Interval', values='Cumulative Return', aggfunc='mean')
 
-# 处理不同的t值
 pivot_t5 = process_data(5)
 pivot_t10 = process_data(10)
 pivot_t20 = process_data(20)
 
-# 将结果转换为百分比并合并到一个DataFrame
 pivot_t5 = pivot_t5 * 100
 pivot_t10 = pivot_t10 * 100
 pivot_t20 = pivot_t20 * 100
 pivot_combined = pd.concat([pivot_t5, pivot_t10, pivot_t20], axis=1, keys=['t=5', 't=10', 't=20'])
 
-# 绘制热力图
 plt.figure(figsize=(12, 8))
 sns.heatmap(pivot_combined, annot=True, fmt=".2f", cmap="coolwarm", cbar_kws={'label': '平均累计回报率 (%)'})
 plt.title('t天后不同横盘时间长度的平均累计收益率')
